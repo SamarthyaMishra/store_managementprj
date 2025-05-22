@@ -1,14 +1,17 @@
 package com.store.management.dto;
 
-import lombok.Data;
+import java.math.BigInteger;
+
+import lombok.*;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CustomerDTO {
-    private Integer customerId;
+    private BigInteger customerId;
     private String customerCode;
     private String customerName;
     private String mobileNumber;
     private String address;
-
-    // Getters and Setters
 }

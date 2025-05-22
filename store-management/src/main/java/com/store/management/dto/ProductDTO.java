@@ -1,21 +1,23 @@
 package com.store.management.dto;
 
+import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import lombok.Data;
-
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ProductDTO {
     private Integer productId;
     private String productCode;
     private String productName;
-    private Integer unitId;
+    private UnitsDTO unit;
     private BigDecimal quantity;
     private BigDecimal buyingPrice;
     private BigDecimal sellingPriceRetail;
     private BigDecimal sellingPriceWholesale;
     private LocalDateTime createdAt;
-
-    // Getters and Setters
+    // private BigDecimal availableStock;
 }

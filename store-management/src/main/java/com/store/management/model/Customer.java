@@ -1,22 +1,30 @@
 package com.store.management.model;
-import jakarta.persistence.*; 
-import lombok.*; 
-@Entity 
-@Data 
-@NoArgsConstructor 
-@AllArgsConstructor 
+import java.math.BigInteger;
 
-public class Customer { 
-    @Id 
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
-    @Column(name = "customer_id", columnDefinition = "INT" , nullable = false)
-    private Long customerId; 
-    @Column(unique = true, nullable = false) 
-    private String customerCode; 
-    @Column(nullable = false) 
-    private String customerName; 
-    @Column(unique = true, nullable = false)
-    private String mobileNumber; 
-    @Column(length = 500) 
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Getter
+@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Customer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private BigInteger customerId;
+
+    @Column(name = "customer_code", unique = true)
+    private String customerCode;
+
+    private String customerName;
+
+    private String mobileNumber;
+
+    @Lob
     private String address;
 }
+

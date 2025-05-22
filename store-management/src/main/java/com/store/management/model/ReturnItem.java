@@ -1,32 +1,31 @@
 package com.store.management.model;
-import jakarta.persistence.*; 
-import lombok.*; 
-import java.math.BigDecimal; 
-@Entity 
-@Data 
-@NoArgsConstructor 
-@AllArgsConstructor 
+import java.math.BigDecimal;
 
-public class ReturnItem { 
-    @Id 
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
-    @Column(name = "return_item_id", nullable = false , columnDefinition = "INT")
-    private Long returnItemId; 
+import jakarta.persistence.*;
+import lombok.*;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "return_id", nullable = false)
-    private Return returnTransaction; 
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ReturnItem {
 
-    @ManyToOne(fetch = FetchType.LAZY) 
-    @JoinColumn(name = "product_id", nullable = false) 
-    private Product product; 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer returnItemId;
 
-    @Column(name = "quantity",nullable = false)
-    private BigDecimal quantity; 
-    
-    @Column(name = "price",nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "return_id")
+    private Returns returns;  // updated to match DTO field name
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    private BigDecimal quantity;
+
     private BigDecimal price;
-    
-    @Column(name = "total_price",nullable = false) 
+
     private BigDecimal totalPrice;
 }

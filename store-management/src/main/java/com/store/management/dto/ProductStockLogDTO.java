@@ -1,21 +1,19 @@
 package com.store.management.dto;
 
+import lombok.*;
 
-
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
-import lombok.Data;
-
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ProductStockLogDTO {
-    private Integer logId;
-    private Integer productId;
-    private String transactionType; // ADD, SALE, RETURN
-    private Integer referenceId;
-    private BigDecimal quantityChange;
+    private BigInteger logId;
+    private ProductDTO product;
+    private String transactionType; // ADD / SALE / RETURN
+    private BigInteger referenceId;
+    private double quantityChange;
     private LocalDateTime logDate;
-
-    // Getters and Setters
 }
-

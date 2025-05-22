@@ -1,0 +1,288 @@
+/* .modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #45a049;
+} */
+
+
+/* .print-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  overflow: auto;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.print-page {
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-page, .print-page * {
+    visibility: visible;
+  }
+  .print-page {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    box-shadow: none;
+  }
+  .no-print {
+    display: none;
+  }
+} */
+
+
+.print-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  overflow: auto;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.print-page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: auto;
+  background: white;
+  padding: 20mm;
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Ensure perfect A4 print layout */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .print-page, .print-page * {
+    visibility: visible;
+  }
+
+  .print-page {
+    position: absolute;
+    left: 0;
+    top: 0;
+    box-shadow: none;
+    width: 210mm;
+    height: 297mm;
+    padding: 20mm;
+  }
+
+  .no-print {
+    display: none;
+  }
+}
+/* CreateSaleBill.css */
+
+/* Container Styling */
+.create-sale-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 15px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+/* Fieldsets Styling */
+fieldset {
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  padding: 15px 20px;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+legend {
+  font-weight: 600;
+  padding: 0 10px;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background-color: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+thead {
+  background-color: #7fb6f1;
+  color: white;
+}
+
+thead th {
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #0056b3;
+}
+
+tbody tr {
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.3s ease;
+}
+
+tbody tr:hover {
+  background-color: #f1f7ff;
+}
+
+tbody td {
+  padding: 8px 12px;
+  vertical-align: middle;
+  border-right: 1px solid #eee;
+}
+
+tbody td:last-child {
+  border-right: none;
+}
+
+/* Inputs and Selects inside table */
+table input[type="number"],
+table select {
+  width: 100%;
+  padding: 6px 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+table input[type="number"]:focus,
+table select:focus {
+  outline: none;
+  border-color: #7fb6f1;
+}
+
+/* Buttons inside table */
+table button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  transition: background-color 0.3s ease;
+}
+
+table button:hover {
+  background-color: #c82333;
+}
+
+/* Add Item Button */
+button[type="button"] {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+button[type="button"]:hover {
+  background-color: #218838;
+}
+
+/* Submit Button */
+button[type="submit"] {
+  background-color:#7fb6f1;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #7fb6f1;
+}
+
+/* Gross Total Styling */
+h3 {
+  font-weight: 700;
+  margin-top: 15px;
+}
+
+/* New Customer Fields */
+.new-customer-fields input {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.new-customer-fields input:focus {
+  outline: none;
+  border-color: #007bff;
+}

@@ -1,21 +1,24 @@
 package com.store.management.dto;
 
-
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
-import lombok.Data;
+import com.store.management.model.Sale.PaymentMode;
+import com.store.management.model.Sale.SaleType;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class SaleDTO {
     private Integer saleId;
-    private Integer customerId;
+    private CustomerDTO customer;
     private LocalDateTime saleDate;
-    private String paymentMode;  // Cash, Online
-    private String saleType;     // Retail, Wholesale
+    private PaymentMode paymentMode;
+    private SaleType saleType;
     private BigDecimal grossTotal;
-
-    // Getters and Setters
+    private List<SaleItemDTO> items;
 }
-

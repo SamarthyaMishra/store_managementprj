@@ -1,11 +1,12 @@
 package com.store.management.dto;
 
-import lombok.Data;
+import lombok.*;
 
 @Data
-public class UnitDTO {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class UnitsDTO {
     private Integer unitId;
     private String unitName;
-
-    // Getters and Setters
 }

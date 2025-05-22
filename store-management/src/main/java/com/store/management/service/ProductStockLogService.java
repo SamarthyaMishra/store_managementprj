@@ -1,14 +1,13 @@
 package com.store.management.service;
 
-
+import com.store.management.model.ProductStockLog;
+import com.store.management.repository.ProductStockLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.store.management.dto.ProductStockLogDTO;
-import com.store.management.model.Product;
-import com.store.management.model.ProductStockLog;
-import com.store.management.repository.ProductRepository;
-import com.store.management.repository.ProductStockLogRepository;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductStockLogService {
@@ -16,21 +15,27 @@ public class ProductStockLogService {
     @Autowired
     private ProductStockLogRepository productStockLogRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+    public List<ProductStockLog> getAllLogs() {
+        return productStockLogRepository.findAll();
+    }
 
-    public ProductStockLogDTO createLog(ProductStockLogDTO dto) {
-        Product product = productRepository.findById(dto.getProductId()).orElseThrow();
+    public Optional<ProductStockLog> getLogById(BigInteger logId) {
+        return productStockLogRepository.findById(logId);
+    }
 
-        ProductStockLog log = new ProductStockLog();
-        log.setProduct(product);
-        // log.setTransactionType(dto.getTransactionType());
-        // log.setReferenceId(dto.getReferenceId());
-        log.setQuantityChange(dto.getQuantityChange());
-        log.setLogDate(dto.getLogDate());
+    public List<ProductStockLog> getLogsByProductId(Integer productId) {
+        return productStockLogRepository.findByProductProductId(productId);
+    }
 
-        ProductStockLog saved = productStockLogRepository.save(log);
-        // dto.setLogId(saved.getId());
-        return dto;
+    public List<ProductStockLog> getLogsByTransactionType(ProductStockLog.TransactionType transactionType) {
+        return productStockLogRepository.findByTransactionType(transactionType);
+    }
+
+    public ProductStockLog saveLog(ProductStockLog log) {
+        return productStockLogRepository.save(log);
+    }
+
+    public void deleteLog(BigInteger logId) {
+        productStockLogRepository.deleteById(logId);
     }
 }
