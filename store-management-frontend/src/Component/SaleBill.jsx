@@ -40,12 +40,41 @@ const CreateSaleBill = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    
     fetchCustomers();
     axios.get('http://localhost:8080/api/products')
-      .then(res => setProducts(res.data))
+      .then(res => {
+        console.log('Products fetched:---------------------------', res.data);
+      setProducts(res.data);
+      setAllProducts(res.data); // 🔧 this was missing!
+    })
       .catch(err => console.error('Error fetching products:', err));
   }, []);
 
+  useEffect(() => {
+  const updatedItems = bill.items.map(item => {
+    const product = item.product;
+    if (!product) return item;
+
+    const price = bill.type === 'Retail'
+      ? product.sellingPriceRetail
+      : product.sellingPriceWholesale;
+
+    return {
+      ...item,
+      price,
+      totalPrice: price * item.quantity
+    };
+  });
+
+  const grossTotal = updatedItems.reduce((sum, item) => sum + item.totalPrice, 0);
+
+  setBill(prev => ({
+    ...prev,
+    items: updatedItems,
+    grossTotal
+  }));
+}, [bill.type]);
   const fetchCustomers = () => {
     axios.get('http://localhost:8080/api/customers')
       .then(res => setCustomers(res.data))
@@ -63,34 +92,33 @@ const CreateSaleBill = () => {
     }
   };
 
-const handleProductChange = (index, selectedProductName) => {
-  const updatedItems = [...billItems];
-  const selectedProduct = allProducts.find(p => p.name === selectedProductName);
-
-  if (selectedProduct) {
-    const existingPrice = updatedItems[index].price;
-    const isRetail = selectedSaleType === 'Retail'; // or selectedReturnType if this is Return page
-
-    const dbPrice = isRetail ? selectedProduct.retailPrice : selectedProduct.wholesalePrice;
-
-    const finalPrice = !existingPrice || existingPrice === 0 ? dbPrice : existingPrice;
-
-    updatedItems[index] = {
-      ...updatedItems[index],
-      productName: selectedProductName,
-      productId: selectedProduct.id,
-      unit: selectedProduct.unit,
-      price: finalPrice,
-    };
-    setBillItems(updatedItems);
-  }
-};
-
   const handleProductSelect = (index, productId) => {
-    const selectedProduct = products.find(p => p.productId === parseInt(productId));
-    const updatedItems = [...bill.items];
-    updatedItems[index].product = selectedProduct;
-    setBill(prev => ({ ...prev, items: updatedItems }));
+    // const selectedProduct = products.find(p => p.productId === parseInt(productId));
+    // const updatedItems = [...bill.items];
+    // updatedItems[index].product = selectedProduct;
+    // setBill(prev => ({ ...prev, items: updatedItems }));
+
+      const selectedProduct = products.find(p => p.productId === parseInt(productId));
+  if (!selectedProduct) return;
+
+  const isRetail = bill.type === 'Retail';
+  const price = isRetail
+    ? selectedProduct.sellingPriceRetail
+    : selectedProduct.sellingPriceWholesale;
+
+  const updatedItems = [...bill.items];
+  updatedItems[index] = {
+    product: selectedProduct,
+    quantity: 1,
+    price: price,
+    totalPrice: price * 1
+  };
+
+  setBill(prev => ({
+    ...prev,
+    items: updatedItems,
+    grossTotal: updatedItems.reduce((sum, item) => sum + item.totalPrice, 0)
+  }));
   };
 
   const handleItemChange = (index, field, value) => {
@@ -249,7 +277,7 @@ const handleProductChange = (index, selectedProductName) => {
         <td style={{ border: '1px solid black', padding: '8px' }}>
           <input
             type="number"
-            value={item.quantity}
+            value={item.quantity ?? ''}
             onChange={e => handleItemChange(index, 'quantity', e.target.value)}
             required
             style={{ width: '60px' }}
@@ -258,7 +286,7 @@ const handleProductChange = (index, selectedProductName) => {
         <td style={{ border: '1px solid black', padding: '8px' }}>
           <input
             type="number"
-            value={item.price}
+            value={item.price ?? ''}
             onChange={e => handleItemChange(index, 'price', e.target.value)}
             required
             style={{ width: '80px' }}
