@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
@@ -45,6 +46,24 @@ public class ReturnsService {
     // Save a return with its items
     public ReturnsDTO saveReturn(ReturnsDTO dto) {
         Returns entity = toEntity(dto);
+
+         // Update stock quantities for each return item
+    if (entity.getReturnItems() != null) {
+        for (ReturnItem returnItem : entity.getReturnItems()) {
+            Product product = returnItem.getProduct();
+            if (product != null) {
+                BigDecimal currentQty = product.getQuantity();  // current stock (BigDecimal)
+                BigDecimal returnQty = returnItem.getQuantity(); // returned quantity (BigDecimal)
+
+                // Add returned quantity back to stock
+                BigDecimal newQty = currentQty.add(returnQty);
+
+                product.setQuantity(newQty);
+                productRepository.save(product);
+            }
+        }
+    }
+
         Returns saved = returnRepository.save(entity);
         return toDTO(saved);
     }

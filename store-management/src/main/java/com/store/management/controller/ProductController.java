@@ -76,12 +76,6 @@ public class ProductController {
         @ApiResponse(responseCode = "201", description = "Product created successfully"),
         @ApiResponse(responseCode = "400", description = "Invalid input")
     })
-
-//     @GetMapping("/product")
-// public List<ProductDTO> getProductsWithStock() {
-//     return productService.getAllProductsWithAvailableStock();
-// }
-
     
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@RequestBody Product productDetails) {

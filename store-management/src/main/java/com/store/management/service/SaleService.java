@@ -13,7 +13,7 @@ import com.store.management.repository.ProductRepository;
 import com.store.management.repository.SaleRepository;
 
 import lombok.RequiredArgsConstructor;
-
+import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +37,25 @@ public class SaleService {
     public SaleDTO saveSale(SaleDTO dto) {
         Sale sale = toEntity(dto);
         Sale saved = saleRepository.save(sale);
+
+         // After saving sale, update product quantities
+      saved.getItems().forEach(saleItem -> {
+        Product product = productRepository.findById(saleItem.getProduct().getProductId())
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        BigDecimal currentQty = product.getQuantity();    // BigDecimal
+        BigDecimal soldQty = saleItem.getQuantity();// assuming saleItem.getQuantity() is int
+
+        BigDecimal newQty = currentQty.subtract(soldQty);
+
+        if (newQty.compareTo(BigDecimal.ZERO) < 0) {
+            throw new RuntimeException("Insufficient stock for product: " + product.getProductName());
+        }
+
+        product.setQuantity(newQty);
+        productRepository.save(product);
+    });
+
         return toDTO(saved);
     }
     

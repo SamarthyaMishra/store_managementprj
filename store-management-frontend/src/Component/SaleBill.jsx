@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { FaHome } from "react-icons/fa";
 
 import ukFlag from "../assets/flag/eng.png";
 import inFlag from "../assets/flag/ind.png";
@@ -202,6 +204,7 @@ const CreateSaleBill = () => {
   };
 
   return (
+    
     <div className="create-sale-container">
       <div style={{ textAlign: 'center' }}>
         <h1>{STORE_INFO.name}</h1>
@@ -209,6 +212,38 @@ const CreateSaleBill = () => {
         {saleId && <h4>Sale ID: {saleId}</h4>}
       </div>
 
+ {/* Dashboard Button */}
+      <div style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 1000 }}>
+        <Link
+          to="/dashboard"
+          style={{
+            textDecoration: 'none',
+            color: '#007bff',
+            fontSize: '18px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            fontWeight: '600',
+            padding: '6px 12px',
+            borderRadius: '6px',
+            border: '1.5px solid #007bff',
+            backgroundColor: '#e7f1ff',
+            transition: 'background-color 0.3s, color 0.3s',
+          }}
+          title="Go to Dashboard"
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#007bff';
+            e.currentTarget.style.color = 'white';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#e7f1ff';
+            e.currentTarget.style.color = '#007bff';
+          }}
+        >
+          <FaHome size={20} />
+          Dashboard
+        </Link>
+      </div>
       <hr />
 
       <h2>Create Sale Bill</h2>

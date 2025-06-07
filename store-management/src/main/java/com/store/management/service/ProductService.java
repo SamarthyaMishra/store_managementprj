@@ -93,46 +93,6 @@ product.setUnit(unit);
     
         return productRepository.save(product);
     }
-    
-// public List<ProductDTO> getAllProductsWithAvailableStock() {
-//     List<Product> products = productRepository.findAll();
-
-//     return products.stream()
-//             .map(product -> {
-//                 BigDecimal soldQtyBigDecimal = saleItemRepository.getTotalSoldQuantityByProductId(product.getProductId());
-//                 BigDecimal returnedQtyBigDecimal = returnItemRepository.getTotalReturnedQuantityByProductId(product.getProductId());
-
-//                 BigDecimal initialQty = product.getQuantity() == null ? BigDecimal.ZERO : product.getQuantity();
-//                 BigDecimal sold = soldQtyBigDecimal == null ? BigDecimal.ZERO : soldQtyBigDecimal;
-//                 BigDecimal returned = returnedQtyBigDecimal == null ? BigDecimal.ZERO : returnedQtyBigDecimal;
-
-//                 BigDecimal availableStock = initialQty.subtract(sold).add(returned);
-
-//                 // Map Units to UnitsDTO
-//                 Units unit = product.getUnit();
-//                 com.store.management.dto.UnitsDTO unitDTO = null;
-//                 if (unit != null) {
-//                     unitDTO = com.store.management.dto.UnitsDTO.builder()
-//                             .unitId(unit.getUnitId())
-//                             .unitName(unit.getUnitName())
-//                             .build();
-//                 }
-
-//                 return ProductDTO.builder()
-//                         .productId(product.getProductId())
-//                         .productCode(product.getProductCode())
-//                         .productName(product.getProductName())
-//                         .unit(unitDTO)
-//                         .quantity(initialQty)
-//                         .buyingPrice(product.getBuyingPrice())
-//                         .sellingPriceRetail(product.getSellingPriceRetail())
-//                         .sellingPriceWholesale(product.getSellingPriceWholesale())
-//                         .availableStock(availableStock)
-//                         .build();
-//             })
-//             .collect(Collectors.toList());
-// }
-
     @Transactional
     public void deleteProduct(Integer id) {
         saleItemRepository.deleteByProductProductId(id);

@@ -2,6 +2,10 @@ package com.store.management.controller;
 
 import com.store.management.model.Customer;
 import com.store.management.service.CustomerService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,18 +44,26 @@ public class CustomerController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // ✅ Create customer via URL path
     @PostMapping("/create/{customerName}/{mobileNumber}/{address}")
-    public ResponseEntity<Customer> createCustomer(@PathVariable String customerName,
-                                                   @PathVariable String mobileNumber,
-                                                   @PathVariable String address) {
-        Customer customer = new Customer();
-        customer.setCustomerName(customerName);
-        customer.setMobileNumber(mobileNumber);
-        customer.setAddress(address);
-        Customer createdCustomer = customerService.saveCustomer(customer);
-        return ResponseEntity.ok(createdCustomer);
+public ResponseEntity<?> createCustomer(@PathVariable String customerName,
+                                        @PathVariable String mobileNumber,
+                                        @PathVariable String address) {
+    boolean existence = customerService.customerExists(customerName, mobileNumber);
+
+    if (existence) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("Customer already exists with the same name and mobile number.");
     }
+
+    Customer customer = new Customer();
+    customer.setCustomerName(customerName);
+    customer.setMobileNumber(mobileNumber);
+    customer.setAddress(address);
+
+    Customer createdCustomer = customerService.saveCustomer(customer);
+    return ResponseEntity.ok(createdCustomer);
+}
+
 
     // ✅ Delete only by mobile number or name (if you want)
     @DeleteMapping("/{identifier}")

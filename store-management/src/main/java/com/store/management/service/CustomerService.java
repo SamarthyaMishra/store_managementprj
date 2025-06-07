@@ -35,6 +35,9 @@ public class CustomerService {
         return customerRepository.findFirstByCustomerNameIgnoreCase(name);
     }
     
+    public boolean customerExists(String customerName, String mobileNumber) {
+    return customerRepository.existsByCustomerNameIgnoreCaseAndMobileNumber(customerName, mobileNumber);
+}
 
     public Customer saveCustomer(Customer customer) {
         // Generate customer code if not provided

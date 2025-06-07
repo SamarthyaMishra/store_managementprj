@@ -15,6 +15,8 @@ public interface CustomerRepository extends JpaRepository<Customer, BigInteger> 
 
     @Query(value = "SELECT customer_code FROM customer ORDER BY CAST(SUBSTRING(customer_code, 4) AS UNSIGNED) DESC LIMIT 1", nativeQuery = true)
     String findLastCustomerCode();
+
+    boolean existsByCustomerNameIgnoreCaseAndMobileNumber(String customerName, String mobileNumber);
 }
 
 
