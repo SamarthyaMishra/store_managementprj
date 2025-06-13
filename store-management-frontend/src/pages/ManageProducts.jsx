@@ -489,71 +489,118 @@ const ManageProducts = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <form onSubmit={handleSubmit} style={{ marginBottom: "2rem" }}>
-        <input
-          type="text"
-          name="productName"
-          placeholder="Product Name"
-          value={formData.productName}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="productCode"
-          placeholder="Product Code"
-          value={formData.productCode}
-          onChange={handleChange}
-          required
-        />
-        <select
-          name="unitName"
-          value={formData.unitName}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select Unit</option>
-          {units.map((unit) => (
-            <option key={unit.unitId} value={unit.unitName}>
-              {unit.unitName}
-            </option>
-          ))}
-        </select>
-        <input
-          type="number"
-          name="quantity"
-          placeholder="Quantity"
-          value={formData.quantity}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="number"
-          name="buyingPrice"
-          placeholder="Buying Price"
-          value={formData.buyingPrice}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="number"
-          name="sellingPriceRetail"
-          placeholder="Retail Price"
-          value={formData.sellingPriceRetail}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="number"
-          name="sellingPriceWholesale"
-          placeholder="Wholesale Price"
-          value={formData.sellingPriceWholesale}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit" disabled={loading} style={{ marginTop: "1rem" }}>
-          {editingIdentifier ? "Update" : "Add"} Product
-        </button>
-      </form>
+  <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+    <thead style={{ backgroundColor: "#add8e6" }}>
+      <tr>
+        <th style={{ padding: "10px", border: "1px solid #ccc" }}>Name</th>
+        <th style={{ padding: "10px", border: "1px solid #ccc" }}>Code</th>
+        <th style={{ padding: "10px", border: "1px solid #ccc" }}>Unit</th>
+        <th style={{ padding: "10px", border: "1px solid #ccc" }}>Quantity</th>
+        <th style={{ padding: "10px", border: "1px solid #ccc" }}>Buying Price</th>
+        <th style={{ padding: "10px", border: "1px solid #ccc" }}>Retail Price</th>
+        <th style={{ padding: "10px", border: "1px solid #ccc" }}>Wholesale Price</th>
+        <th style={{ padding: "10px", border: "1px solid #ccc" }}>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style={{ padding: "10px", border: "1px solid #ccc" }}>
+          <input
+            type="text"
+            name="productName"
+            value={formData.productName}
+            onChange={handleChange}
+            required
+            style={{ width: "100%" }}
+            placeholder="Product Name"
+          />
+        </td>
+        <td style={{ padding: "10px", border: "1px solid #ccc" }}>
+          <input
+            type="text"
+            name="productCode"
+            value={formData.productCode}
+            onChange={handleChange}
+            required
+            style={{ width: "100%" }}
+            placeholder="Product Code"
+          />
+        </td>
+        <td style={{ padding: "10px", border: "1px solid #ccc" }}>
+          <select
+            name="unitName"
+            value={formData.unitName}
+            onChange={handleChange}
+            required
+            style={{ width: "100%" }}
+          >
+            <option value="">Select Unit</option>
+            {units.map((unit) => (
+              <option key={unit.unitId} value={unit.unitName}>
+                {unit.unitName}
+              </option>
+            ))}
+          </select>
+        </td>
+        <td style={{ padding: "10px", border: "1px solid #ccc" }}>
+          <input
+            type="number"
+            name="quantity"
+            value={formData.quantity}
+            onChange={handleChange}
+            required
+            style={{ width: "100%" }}
+            placeholder="Quantity"
+          />
+        </td>
+        <td style={{ padding: "10px", border: "1px solid #ccc" }}>
+          <input
+            type="number"
+            name="buyingPrice"
+            value={formData.buyingPrice}
+            onChange={handleChange}
+            required
+            style={{ width: "100%" }}
+            placeholder="Buying Price"
+          />
+        </td>
+        <td style={{ padding: "10px", border: "1px solid #ccc" }}>
+          <input
+            type="number"
+            name="sellingPriceRetail"
+            value={formData.sellingPriceRetail}
+            onChange={handleChange}
+            required
+            style={{ width: "100%" }}
+            placeholder="Retail Price"
+          />
+        </td>
+        <td style={{ padding: "10px", border: "1px solid #ccc" }}>
+          <input
+            type="number"
+            name="sellingPriceWholesale"
+            value={formData.sellingPriceWholesale}
+            onChange={handleChange}
+            required
+            style={{ width: "100%" }}
+            placeholder="Wholesale Price"
+          />
+        </td>
+        <td style={{ padding: "10px", border: "1px solid #ccc", textAlign: "center" }}>
+          <button
+            type="submit"
+            disabled={loading}
+            style={{ padding: "6px 12px" }}
+          >
+            {editingIdentifier ? "Update" : "Add"}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+
 
       <h2>Products</h2>
 
@@ -563,7 +610,7 @@ const ManageProducts = () => {
         <p>No products found. Please add a new product.</p>
       ) : (
         <table border="1" cellPadding="8" style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead style={{ backgroundColor: "#eee" }}>
+          <thead style={{ backgroundColor: "#add8e6" }}>
             <tr>
               <th>Name</th>
               <th>Code</th>

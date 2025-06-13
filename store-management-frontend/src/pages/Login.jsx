@@ -80,13 +80,16 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/login", { username, password });
+      const res = await axios.post("http://localhost:8080/api/login", { username, password });
       // res.data should have the JWT token
-      localStorage.setItem("token", res.data.token); // save token in localStorage
-      setError("");
-      navigate("/dashboard");
+      // alert(res.data);
+      if (res.status === 200) {
+  console.log("Login success:", res.data); // Debug response
+  localStorage.setItem("token", res.data.token || "dummy-token");
+  navigate("/dashboard");
+}
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError("Invalid username or password");
     }
   };
 
@@ -99,22 +102,29 @@ export default function Login() {
       <form className="card-glass login-card" onSubmit={handleSubmit}>
         <h2 className="login-title"> Login Here </h2>
         <p className="login-subtitle"> Welcome To The Store Management </p>
-        <input
-          className="login-input"
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-        <input
-          className="login-input"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+   <input
+  type="text"
+  name="username"
+  placeholder="Username"
+  value={username}
+  onChange={(e) => {
+    console.log("Username typed:", e.target.value); // Debug
+    setUsername(e.target.value);
+  }}
+  autoComplete="username"
+/>
+<input
+  type="password"
+  name="password"
+  placeholder="Password"
+  value={password}
+  onChange={(e) => {
+    console.log("Password typed:", e.target.value); // Debug
+    setPassword(e.target.value);
+  }}
+  autoComplete="current-password"
+/>
+
         <button className="btn-primary" type="submit">
           Login
         </button>
