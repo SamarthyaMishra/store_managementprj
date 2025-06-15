@@ -2,8 +2,28 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { FaHome } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
+import ukFlag from '../assets/flag/eng.png';
+import { useNavigate } from "react-router-dom";
+import inFlag from '../assets/flag/ind.png';
 
 const CustomerManager = () => {
+  const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const languages = [
+    { code: 'en', label: 'English', flag: ukFlag },
+    { code: 'hi', label: 'हिंदी', flag: inFlag },
+  ];
+
+  const currentLanguage =
+    languages.find((lang) => lang.code === i18n.language) || languages[0];
+
+  const changeLanguage = (code) => {
+    i18n.changeLanguage(code);
+    setIsOpen(false);
+  };
   const [customers, setCustomers] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -17,11 +37,6 @@ const CustomerManager = () => {
 
   // Indian mobile number validation function
   const validateIndianMobileNumber = (mobile) => {
-    // Regex explanation:
-    // ^ - start of string
-    // [6-9] - first digit must be 6,7,8 or 9
-    // \d{9} - followed by 9 digits (total 10 digits)
-    // $ - end of string
     const regex = /^[6-9]\d{9}$/;
     return regex.test(mobile);
   };
@@ -215,14 +230,75 @@ const CustomerManager = () => {
         </Link>
       </div>
 
-      <h2 style={{ color: '#333', marginBottom: '20px' }}>Customer Manager</h2>
+      {/* Language Dropdown */}{/* Language Dropdown */}
+      <div style={{ position: 'fixed', top: '20px', right: '20px', zIndex: 1000 }}>
+        <div
+          onClick={() => setIsOpen(!isOpen)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            cursor: 'pointer',
+            backgroundColor: 'white',
+            padding: '5px 10px',
+            borderRadius: 4,
+            boxShadow: '0 0 5px rgba(0,0,0,0.2)',
+          }}
+        >
+          <img
+            src={currentLanguage.flag}
+            alt={currentLanguage.label}
+            style={{ width: 20, marginRight: 8 }}
+          />
+          <span>{currentLanguage.label}</span>
+        </div>
+
+        {isOpen && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '100%',
+              right: 0,
+              backgroundColor: 'white',
+              border: '1px solid #ccc',
+              borderRadius: 4,
+              marginTop: 4,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+              minWidth: 130,
+              zIndex: 2000,
+            }}
+          >
+            {languages.map((lang) => (
+              <div
+                key={lang.code}
+                onClick={() => changeLanguage(lang.code)}
+                style={{
+                  padding: '5px 10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  backgroundColor: lang.code === currentLanguage.code ? '#eee' : 'white',
+                }}
+              >
+                <img
+                  src={lang.flag}
+                  alt={lang.label}
+                  style={{ width: 20, marginRight: 8 }}
+                />
+                <span>{lang.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <h2 style={{ color: '#333', marginBottom: '20px' }}>{t('customer_manager')}</h2>
 
       {/* Search Section */}
       <div style={{ marginBottom: '15px', position: 'relative' }}>
-        <h4 style={{ marginBottom: '8px' }}>Search Customer by Name or Mobile</h4>
+        <h4 style={{ marginBottom: '8px' }}>{t('search_customer')}</h4>
         <input
           type="text"
-          placeholder="Enter name or mobile number"
+          placeholder={t('enter_name_or_mobile')}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           style={{
@@ -247,7 +323,7 @@ const CustomerManager = () => {
             fontWeight: '600',
           }}
         >
-          Search
+          {t('search')}
         </button>
 
         {/* Suggestions dropdown */}
@@ -300,7 +376,7 @@ const CustomerManager = () => {
 
         <div style={{ marginBottom: '12px' }}>
           <label htmlFor="customerName" style={{ display: 'block', fontWeight: '600', marginBottom: '6px' }}>
-            Customer Name
+            {t('customer_name')}
           </label>
           <input
             id="customerName"
@@ -320,7 +396,7 @@ const CustomerManager = () => {
 
         <div style={{ marginBottom: '12px' }}>
           <label htmlFor="mobileNumber" style={{ display: 'block', fontWeight: '600', marginBottom: '6px' }}>
-            Mobile Number
+            {t('mobile_number')}
           </label>
           <input
             id="mobileNumber"
@@ -348,7 +424,7 @@ const CustomerManager = () => {
 
         <div style={{ marginBottom: '12px' }}>
           <label htmlFor="address" style={{ display: 'block', fontWeight: '600', marginBottom: '6px' }}>
-            Address
+            {t('address')}
           </label>
           <textarea
             id="address"

@@ -1,9 +1,28 @@
-import { Link } from 'react-router-dom';
-import { FaHome } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';import { FaHome } from 'react-icons/fa';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
+import ukFlag from '../assets/flag/eng.png';
+import inFlag from '../assets/flag/ind.png';
 
 const CreateReturnBill = () => {
+  const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const languages = [
+    { code: 'en', label: 'English', flag: ukFlag },
+    { code: 'hi', label: 'हिंदी', flag: inFlag },
+  ];
+
+  const currentLanguage =
+    languages.find((lang) => lang.code === i18n.language) || languages[0];
+
+  const changeLanguage = (code) => {
+    i18n.changeLanguage(code);
+    setIsOpen(false);
+  };
+
   const STORE_INFO = {
     name: "Awasthi Atta Chakki",
     phone: "9876543210",
@@ -61,14 +80,30 @@ const CreateReturnBill = () => {
   };
 
   const handleItemChange = (e) => {
-    const { name, value } = e.target;
-    let val = name === "quantity" || name === "price" ? parseFloat(value) : value;
-    if (isNaN(val) && (name === "quantity" || name === "price")) val = 0;
+  const { name, value } = e.target;
 
-    const updatedItem = { ...currentItem, [name]: val };
-    updatedItem.totalPrice = updatedItem.quantity * updatedItem.price;
-    setCurrentItem(updatedItem);
+  let val = value;
+
+  // If the field is quantity or price and value is not empty, parse it
+  if ((name === "quantity" || name === "price") && value !== "") {
+    val = parseFloat(value);
+    if (isNaN(val)) val = "";
+  }
+
+  const updatedItem = {
+    ...currentItem,
+    [name]: val,
   };
+
+  // Calculate totalPrice only if both quantity and price are valid numbers
+  const qty = parseFloat(updatedItem.quantity);
+  const prc = parseFloat(updatedItem.price);
+  updatedItem.totalPrice =
+    !isNaN(qty) && !isNaN(prc) ? qty * prc : "";
+
+  setCurrentItem(updatedItem);
+};
+
 
   const addItem = () => {
     if (!currentItem.productId || currentItem.quantity <= 0 || currentItem.price <= 0) {
@@ -226,6 +261,67 @@ const CreateReturnBill = () => {
         {returnId && <h4>Return Bill ID: {returnId}</h4>}
       </div>
 
+      {/* Language Dropdown */}{/* Language Dropdown */}
+      <div style={{ position: 'fixed', top: '20px', right: '20px', zIndex: 1000 }}>
+        <div
+          onClick={() => setIsOpen(!isOpen)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            cursor: 'pointer',
+            backgroundColor: 'white',
+            padding: '5px 10px',
+            borderRadius: 4,
+            boxShadow: '0 0 5px rgba(0,0,0,0.2)',
+          }}
+        >
+          <img
+            src={currentLanguage.flag}
+            alt={currentLanguage.label}
+            style={{ width: 20, marginRight: 8 }}
+          />
+          <span>{currentLanguage.label}</span>
+        </div>
+
+        {isOpen && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '100%',
+              right: 0,
+              backgroundColor: 'white',
+              border: '1px solid #ccc',
+              borderRadius: 4,
+              marginTop: 4,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+              minWidth: 130,
+              zIndex: 2000,
+            }}
+          >
+            {languages.map((lang) => (
+              <div
+                key={lang.code}
+                onClick={() => changeLanguage(lang.code)}
+                style={{
+                  padding: '5px 10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  backgroundColor: lang.code === currentLanguage.code ? '#eee' : 'white',
+                }}
+              >
+                <img
+                  src={lang.flag}
+                  alt={lang.label}
+                  style={{ width: 20, marginRight: 8 }}
+                />
+                <span>{lang.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
        {/* Dashboard Button */}
       <div style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 1000 }}>
         <Link
@@ -258,137 +354,221 @@ const CreateReturnBill = () => {
           Dashboard
         </Link>
       </div>
+      
+   
+     <form onSubmit={handleSubmit} style={{
+  display: 'flex',
+  flexWrap: 'wrap',
+  alignItems: 'center',
+  gap: '20px',
+  padding: '10px'
+}}>
+  <div style={{ width: '100%' }}>
+    <h2 style={{ margin: 0 }}>{t("createReturnBill")}</h2>
+  </div>
+  {/* Sale Selection */}
+  <div style={{ display: 'flex', flexDirection: 'column',  alignItems: 'center' }}>
+     <label style={{ marginBottom: '5px' }}>{t("sale")}</label>
+    <select
+      required
+      value={form.sale.saleId}
+      onChange={(e) =>
+        setForm(prev => ({ ...prev, sale: { saleId: e.target.value } }))
+      }
+    >
+      <option value="">{t("selectSale")}</option>
+      {sales.map(s => (
+        <option key={s.saleId} value={s.saleId}>#{s.saleId}</option>
+      ))}
+    </select>
+  </div>
 
-      <hr />
+  {/* Customer Selection */}
+  <div style={{ display: 'flex', flexDirection: 'column' , alignItems: 'center'}}>
+    <label>{t("customer")}</label>
+    <select
+      required
+      onChange={handleCustomerSelect}
+      value={isNewCustomer ? "new" : form.customer.customerId || ""}
+    >
+      <option value="">{t("selectCustomer")}</option>
+      {customers.map(c => (
+        <option key={c.customerId} value={c.customerId}>
+          {c.customerName}
+        </option>
+      ))}
+      <option value="new">{t("addNewCustomer")}</option>
+    </select>
+  </div>
 
-      <h2>Create Return Bill</h2>
-      <form onSubmit={handleSubmit}>
+  {/* Return Date */}
+  <div style={{ display: 'flex', flexDirection: 'column' , alignItems: 'center' }}>
+    <label>{t("returnDate")}</label>
+    <input
+      type="date"
+      name="returnDate"
+      value={form.returnDate}
+      onChange={handleFormChange}
+      required
+    />
+  </div>
 
-        <label>Sale:</label>
-        <select
-          required
-          value={form.sale.saleId}
-          onChange={(e) => setForm(prev => ({ ...prev, sale: { saleId: e.target.value } }))}
-        >
-          <option value="">Select Sale</option>
-          {sales.map(s => (
-            <option key={s.saleId} value={s.saleId}>#{s.saleId}</option>
-          ))}
-        </select>
+  {/* Return Type */}
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <label>{t("returnType")}</label>
+    <select
+      name="returnType"
+      value={form.returnType}
+      onChange={handleFormChange}
+    >
+      <option value="Retail">{t("retail")}</option>
+      <option value="Wholesale">{t("wholesale")}</option>
+    </select>
+  </div>
 
-        <br /><br />
+  {/* Payment Mode */}
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <label>{t("paymentMode")}</label>
+    <select
+      name="paymentMode"
+      value={form.paymentMode}
+      onChange={handleFormChange}
+    >
+      <option value="Cash">{t("cash")}</option>
+      <option value="Online">{t("online")}</option>
+    </select>
+  </div>
 
-        <label>Customer:</label>
-        <select required onChange={handleCustomerSelect} value={isNewCustomer ? "new" : form.customer.customerId || ""}>
-          <option value="">Select Customer</option>
-          {customers.map(c => (
-            <option key={c.customerId} value={c.customerId}>{c.customerName}</option>
-          ))}
-          <option value="new">Add New Customer</option>
-        </select>
-
-        {isNewCustomer && (
-          <div style={{ marginTop: '10px' }}>
-            <input
-              type="text"
-              name="customerName"
-              placeholder="Customer Name"
-              value={newCustomerForm.customerName}
-              onChange={handleNewCustomerInput}
-              required
-            />
-            <input
-              type="text"
-              name="mobileNumber"
-              placeholder="Mobile Number"
-              value={newCustomerForm.mobileNumber}
-              onChange={handleNewCustomerInput}
-              required
-              style={{ marginLeft: '10px' }}
-            />
-            <input
-              type="text"
-              name="address"
-              placeholder="Address"
-              value={newCustomerForm.address}
-              onChange={handleNewCustomerInput}
-              required
-              style={{ marginLeft: '10px' }}
-            />
-          </div>
-        )}
-
-        <br />
-
-        <label>Return Date:</label>
+  {/* New Customer (if selected) */}
+  {isNewCustomer && (
+    <>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <label>{t("name")}</label>
         <input
-          type="date"
-          name="returnDate"
-          value={form.returnDate}
-          onChange={handleFormChange}
+          type="text"
+          name="customerName"
+          placeholder={t("customerName")}
+          value={newCustomerForm.customerName}
+          onChange={handleNewCustomerInput}
           required
         />
+      </div>
 
-        <br /><br />
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <label>{t("mobile")}</label>
+        <input
+          type="text"
+          name="mobileNumber"
+          placeholder={t("mobileNumber")}
+          value={newCustomerForm.mobileNumber}
+          onChange={handleNewCustomerInput}
+          required
+        />
+      </div>
 
-        <label>Return Type:</label>
-        <select name="returnType" value={form.returnType} onChange={handleFormChange}>
-          <option value="Retail">Retail</option>
-          <option value="Wholesale">Wholesale</option>
-        </select>
-
-        <br /><br />
-
-        <label>Payment Mode:</label>
-        <select name="paymentMode" value={form.paymentMode} onChange={handleFormChange}>
-          <option value="Cash">Cash</option>
-          <option value="Credit Card">Credit Card</option>
-          <option value="UPI">UPI</option>
-        </select>
-
-        <hr />
-
-        <h3>Add Return Item</h3>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <label>{t("address")}</label>
+        <input
+          type="text"
+          name="address"
+          placeholder="Address"
+          value={newCustomerForm.address}
+          onChange={handleNewCustomerInput}
+          required
+        />
+      </div>
+    </>
+  )}
+ 
+<table border="1" cellPadding="8" style={{ borderCollapse: 'collapse', marginBottom: '10px' }}>
+  <thead>
+    <tr>
+      <th colSpan="4" style={{
+        fontSize: '18px',
+        padding: '12px 16px',
+        backgroundColor: 'white',
+        color: 'black',
+        textAlign: 'left'
+      }}>
+        {t("addReturnItem")}
+      </th>
+    </tr>
+    <tr>
+      <th>{t("product")}</th>
+      <th>{t("quantity")}</th>
+      <th>{t("price")}</th>
+      <th></th> {/* Empty header for the button column */}
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
         <select
           value={currentItem.productId}
-          onChange={e => setCurrentItem(prev => ({ ...prev, productId: parseInt(e.target.value) }))}
+          onChange={e =>
+            setCurrentItem(prev => ({
+              ...prev,
+              productId: parseInt(e.target.value),
+            }))
+          }
         >
-          <option value="">Select Product</option>
+          <option value="">{t("selectProduct")}</option>
           {products.map(p => (
-            <option key={p.productId} value={p.productId}>{p.productName}</option>
+            <option key={p.productId} value={p.productId}>
+              {p.productName}
+            </option>
           ))}
         </select>
-
+      </td>
+      <td>
         <input
           type="number"
           name="quantity"
           placeholder="Quantity"
-          value={currentItem.quantity}
+          value={currentItem.quantity === 0 ? '' : currentItem.quantity}
           onChange={handleItemChange}
           min="0"
-          style={{ marginLeft: '10px', width: '80px' }}
+          style={{ width: '80px' }}
         />
-
+      </td>
+      <td>
         <input
           type="number"
           name="price"
           placeholder="Price"
-          value={currentItem.price}
+          value={currentItem.price === 0 ? '' : currentItem.price}
           onChange={handleItemChange}
           min="0"
-          style={{ marginLeft: '10px', width: '80px' }}
+          style={{ width: '80px' }}
         />
-
-        <button type="button" onClick={addItem} style={{ marginLeft: '10px' }}>Add Item</button>
+      </td>
+      <td>
+        <button type="button" onClick={addItem} style={{ marginLeft: '10px' }}>
+          {t("addItem")}
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
         <table style={{ width: '100%', marginTop: '20px', borderCollapse: 'collapse' }}>
+         
           <thead>
+             <th colSpan="4" style={{
+        fontSize: '18px',
+        padding: '12px 16px',
+        backgroundColor: 'white',
+        color: 'black',
+        textAlign: 'left'
+      }}>
+        {t("totalReturnItems")}
+      </th>
             <tr>
-              <th style={{ borderBottom: '1px solid #ccc' }}>Product</th>
-              <th style={{ borderBottom: '1px solid #ccc' }}>Quantity</th>
-              <th style={{ borderBottom: '1px solid #ccc' }}>Price</th>
-              <th style={{ borderBottom: '1px solid #ccc' }}>Total</th>
-              <th style={{ borderBottom: '1px solid #ccc' }}>Action</th>
+              <th style={{ borderBottom: '1px solid #ccc' }}>{t("product")}</th>
+              <th style={{ borderBottom: '1px solid #ccc' }}>{t("quantity")}</th>
+              <th style={{ borderBottom: '1px solid #ccc' }}>{t("price")}</th>
+              <th style={{ borderBottom: '1px solid #ccc' }}>{t("total")}</th>
+              <th style={{ borderBottom: '1px solid #ccc' }}>{t("action")}</th>
             </tr>
           </thead>
           <tbody>
@@ -398,20 +578,20 @@ const CreateReturnBill = () => {
                 <td>{item.quantity}</td>
                 <td>{item.price}</td>
                 <td>{item.totalPrice.toFixed(2)}</td>
-                <td><button type="button" onClick={() => removeItem(idx)}>Remove</button></td>
+                <td><button type="button" onClick={() => removeItem(idx)}>{t("remove")}</button></td>
               </tr>
             ))}
             {form.returnItems.length === 0 && (
               <tr>
-                <td colSpan="5" style={{ textAlign: 'center' }}>No return items added.</td>
+                <td colSpan="5" style={{ textAlign: 'center' }}>{t("noReturnItems")}</td>
               </tr>
             )}
           </tbody>
         </table>
 
-        <h3>Total Return Amount: ₹{form.totalReturnAmount.toFixed(2)}</h3>
+        <h3>{t("totalReturnAmount")}: ₹{form.totalReturnAmount.toFixed(2)}</h3>
 
-        <button type="submit" style={{ marginTop: '20px' }}>Create Return Bill</button>
+        <button type="submit" style={{ marginTop: '20px' }}>{t("createReturnBill")}</button>
       </form>
 
       {/* Confirmation Modal */}
@@ -432,17 +612,17 @@ const CreateReturnBill = () => {
             width: '400px',
             boxShadow: '0 0 10px rgba(0,0,0,0.25)'
           }}>
-            <h2>Confirm Return Bill</h2>
+            <h2>{t("confirmReturnBill")}</h2>
             {renderCustomerInfo()}
 
-            <p><strong>Return Date:</strong> {form.returnDate}</p>
-            <p><strong>Return Type:</strong> {form.returnType}</p>
-            <p><strong>Payment Mode:</strong> {form.paymentMode}</p>
-            <p><strong>Total Return Amount:</strong> ₹{form.totalReturnAmount.toFixed(2)}</p>
+            <p><strong>{t("returnDate")}:</strong> {form.returnDate}</p>
+            <p><strong>{t("returnType")}:</strong> {form.returnType}</p>
+            <p><strong>{t("paymentMode")}:</strong> {form.paymentMode}</p>
+            <p><strong>{t("totalReturnAmount")}:</strong> ₹{form.totalReturnAmount.toFixed(2)}</p>
 
             <div style={{ textAlign: 'right', marginTop: '20px' }}>
-              <button onClick={cancelConfirm} style={{ marginRight: '10px' }}>Cancel</button>
-              <button onClick={confirmAndSubmit}>Confirm</button>
+              <button onClick={cancelConfirm} style={{ marginRight: '10px' }}>{t("cancel")}</button>
+              <button onClick={confirmAndSubmit}>{t("confirm")}</button>
             </div>
           </div>
         </div>

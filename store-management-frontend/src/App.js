@@ -44,6 +44,8 @@ import CreateReturnBill from "./pages/CreateReturnBill";
 import PrivateRoute from './Component/PrivateRoute';
 import Password from "./pages/Password"; // updated import for forgot password
 import './App.css';
+import './i18n';
+
 
 function App() {
   return (
