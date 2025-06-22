@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import axiosInstance from "../api/axiosInstance";
+import axios from "../api/axiosInstance";
 import { useNavigate, Link } from 'react-router-dom';
 import { FaHome } from 'react-icons/fa';
 import ukFlag from '../assets/flag/eng.png';
