@@ -1,18 +1,14 @@
-import axios from "axios";
+// src/api/productApi.js
 
-const BASE_URL = "http://localhost:8080/api/products";
+import axiosInstance from '../../api/axiosInstance';  // ✅ correct // ✅ use instance
 
-export const getAllProducts = () => axios.get(BASE_URL);
+export const getAllProducts = () => axiosInstance.get("/api/products");
 
-export const createProduct = (productData) => {
-  return axios.post(`${BASE_URL}/create`, productData);
-};
+export const createProduct = (productData) =>
+  axiosInstance.post("/api/products/create", productData);
 
+export const updateProduct = (identifier, productData) =>
+  axiosInstance.put(`/api/products/product/${identifier}`, productData);
 
-export const updateProduct = (identifier, productData) => {
-    return axios.put(`${BASE_URL}/product/${identifier}`, productData);
-  };  
-
-export const deleteProduct = (identifier) => {
-  return axios.delete(`${BASE_URL}/delete/${identifier}`);
-};
+export const deleteProduct = (identifier) =>
+  axiosInstance.delete(`/api/products/delete/${identifier}`);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from '../api/axiosInstance';
 import { createProduct, getAllProducts, updateProduct, deleteProduct } from "./Service/ProductService";
 import { Link } from "react-router-dom";
 import ukFlag from '../assets/flag/eng.png';
@@ -62,7 +62,7 @@ const ManageProducts = () => {
 
   const loadUnits = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/units");
+      const response = await axiosInstance.get("/api/units");
       setUnits(response.data);
     } catch (error) {
       console.error("Error loading units:", error);

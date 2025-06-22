@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import { Link } from 'react-router-dom';
 import { FaHome } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
@@ -44,7 +44,7 @@ const CustomerManager = () => {
   // Fetch all customers on mount
   const fetchCustomers = async () => {
     try {
-      const res = await axios.get('http://localhost:8080/api/customers');
+      const res = await axiosInstance.get('/api/customers');
       setCustomers(res.data);
     } catch (error) {
       console.error('Failed to fetch customers:', error);
@@ -90,7 +90,7 @@ const CustomerManager = () => {
 
     try {
       // Backend expects either name or mobile number to fetch customer
-      const res = await axios.get(`http://localhost:8080/api/customers/${searchInput}`);
+      const res = await axiosInstance.get(`/api/customers/${searchInput}`);
       setFoundCustomer(res.data);
       setForm({
         customerName: res.data.customerName || '',
@@ -119,11 +119,9 @@ const CustomerManager = () => {
     }
 
     try {
-      await axios.post(
-        `http://localhost:8080/api/customers/create/${encodeURIComponent(
-          customerName
-        )}/${mobileNumber}/${encodeURIComponent(address)}`
-      );
+     await axiosInstance.post(
+  `/api/customers/create/${encodeURIComponent(customerName)}/${mobileNumber}/${encodeURIComponent(address)}`
+);
 
       alert('Customer created successfully!');
       setForm({ customerName: '', mobileNumber: '', address: '' });
@@ -152,7 +150,7 @@ const CustomerManager = () => {
     }
 
     try {
-      await axios.put(`http://localhost:8080/api/customers/${searchInput}`, form);
+      await axiosInstance.put(`/api/customers/${searchInput}`, form);
       alert('Customer updated successfully!');
       setFoundCustomer(null);
       setForm({ customerName: '', mobileNumber: '', address: '' });
@@ -173,7 +171,7 @@ const CustomerManager = () => {
     if (!window.confirm('Are you sure you want to delete this customer?')) return;
 
     try {
-      await axios.delete(`http://localhost:8080/api/customers/${searchInput}`);
+      await axiosInstance.delete(`/api/customers/${searchInput}`);
       alert('Customer deleted successfully!');
       setFoundCustomer(null);
       setForm({ customerName: '', mobileNumber: '', address: '' });

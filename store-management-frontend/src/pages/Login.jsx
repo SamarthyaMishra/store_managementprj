@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance"; // ✅ use axios instance
 import backgroundImage from "../assets/login-bg.jpg";
 
 export default function Login() {
@@ -12,7 +12,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8080/api/login", {
+      const res = await axiosInstance.post("/api/login", {
         username,
         password,
       });
@@ -62,13 +62,6 @@ export default function Login() {
           Login
         </button>
         {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
-
-        {/* <p
-          style={{ marginTop: "15px", cursor: "pointer", color: "#007bff" }}
-          onClick={() => navigate("/forgot-password")}
-        >
-          Forgot Password?
-        </p> */}
       </form>
     </div>
   );

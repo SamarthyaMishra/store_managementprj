@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axiosInstance from '../api/axiosInstance';
 import { useParams } from 'react-router-dom';
 
 const Invoice = () => {
@@ -6,7 +7,7 @@ const Invoice = () => {
   const [saleData, setSaleData] = useState(null);
 
   useEffect(() => {
-  fetch(`http://localhost:8080/api/sales/${saleId}`)
+  fetch(`${process.env.REACT_APP_API_BASE_URL}/api/sales/${saleId}`)
     .then(res => res.json())
     .then(data => {
       console.log('Fetched sale data:', data); // 🧪 debug here

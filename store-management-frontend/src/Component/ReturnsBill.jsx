@@ -58,11 +58,21 @@ const CreateReturnBill = () => {
   // Modal state
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  useEffect(() => {
-    axios.get("http://localhost:8080/api/sales").then(res => setSales(res.data)).catch(() => {});
-    axios.get("http://localhost:8080/api/customers").then(res => setCustomers(res.data)).catch(() => {});
-    axios.get("http://localhost:8080/api/products").then(res => setProducts(res.data)).catch(() => {});
-  }, []);
+ useEffect(() => {
+  const baseURL = process.env.REACT_APP_API_BASE_URL;
+
+  axios.get(`${baseURL}/api/sales`)
+    .then(res => setSales(res.data))
+    .catch(() => {});
+
+  axios.get(`${baseURL}/api/customers`)
+    .then(res => setCustomers(res.data))
+    .catch(() => {});
+
+  axios.get(`${baseURL}/api/products`)
+    .then(res => setProducts(res.data))
+    .catch(() => {});
+}, []);
 
   const handleCustomerSelect = (e) => {
     if (e.target.value === 'new') {
@@ -178,9 +188,11 @@ const CreateReturnBill = () => {
           alert("Please fill all new customer fields.");
           return;
         }
-        const res = await axios.post(
-          `http://localhost:8080/api/customers/create/${encodeURIComponent(customerName)}/${mobileNumber}/${encodeURIComponent(address)}`
-        );
+       const baseURL = process.env.REACT_APP_API_BASE_URL;
+
+const res = await axios.post(
+  `${baseURL}/api/customers/create/${encodeURIComponent(customerName)}/${mobileNumber}/${encodeURIComponent(address)}`
+);
         customerToUse = res.data;
       } else {
         customerToUse = customers.find(c => c.customerId === form.customer.customerId);
@@ -196,8 +208,9 @@ const CreateReturnBill = () => {
         totalReturnAmount: form.totalReturnAmount,
       };
 
-      const response = await axios.post('http://localhost:8080/api/returns/create', payload);
+      const baseURL = process.env.REACT_APP_API_BASE_URL;
 
+const response = await axios.post(`${baseURL}/api/returns/create`, payload);
       setReturnId(response.data.returnId || null);
       alert("Return Bill Created Successfully!");
 

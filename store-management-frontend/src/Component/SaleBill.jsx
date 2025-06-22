@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import axios from 'axios';
+import axiosInstance from "../api/axiosInstance";
 import { useNavigate, Link } from 'react-router-dom';
 import { FaHome } from 'react-icons/fa';
 import ukFlag from '../assets/flag/eng.png';
@@ -53,7 +53,7 @@ const CreateSaleBill = () => {
   useEffect(() => {
 
     fetchCustomers();
-    axios.get('http://localhost:8080/api/products')
+    axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/products`)
       .then(res => {
         setProducts(res.data);
         setAllProducts(res.data); // 🔧 this was missing!
@@ -86,7 +86,7 @@ const CreateSaleBill = () => {
     }));
   }, [bill.type]);
   const fetchCustomers = () => {
-    axios.get('http://localhost:8080/api/customers')
+    axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/customers`)
       .then(res => setCustomers(res.data))
       .catch(err => console.error('Error fetching customers:', err));
   };
@@ -178,8 +178,8 @@ const CreateSaleBill = () => {
         }
 
         const customerRes = await axios.post(
-          `http://localhost:8080/api/customers/create/${encodeURIComponent(customerName)}/${mobileNumber}/${encodeURIComponent(address)}`
-        );
+  `${process.env.REACT_APP_API_BASE_URL}/api/customers/create/${encodeURIComponent(customerName)}/${mobileNumber}/${encodeURIComponent(address)}`
+);
         customerToUse = customerRes.data;
       }
 
@@ -196,7 +196,7 @@ const CreateSaleBill = () => {
         }))
       };
 
-      const response = await axios.post('http://localhost:8080/api/sales/create', dto);
+     const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/sales/create`, dto);
       setSaleId(response.data.saleId || null);
       setSaleDetails(response.data);
       setPopupVisible(true);

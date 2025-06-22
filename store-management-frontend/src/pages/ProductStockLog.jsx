@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from '../api/axiosInstance';
 import { Link } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
 
@@ -30,9 +30,9 @@ const ProductStockLog = () => {
     setLoading(true);
     try {
       const [salesRes, returnsRes] = await Promise.all([
-        axios.get("http://localhost:8080/api/sales"),
-        axios.get("http://localhost:8080/api/returns"),
-      ]);
+  axiosInstance.get("/api/sales"),
+  axiosInstance.get("/api/returns"),
+]);
 
       const salesData = Array.isArray(salesRes.data) ? salesRes.data : [];
       const returnsData = Array.isArray(returnsRes.data) ? returnsRes.data : [];
