@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://awasthistore.in")
 @RequestMapping("/api/return-items")
 public class ReturnItemController {
 

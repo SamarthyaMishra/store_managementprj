@@ -11,7 +11,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://awasthistore.in")
 @RequestMapping("/api/returns")
 public class ReturnsController {
 

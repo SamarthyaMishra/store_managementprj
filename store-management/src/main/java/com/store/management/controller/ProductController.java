@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://awasthistore.in")
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {

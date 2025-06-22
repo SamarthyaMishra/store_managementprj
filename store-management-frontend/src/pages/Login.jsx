@@ -63,12 +63,12 @@ export default function Login() {
         </button>
         {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
 
-        <p
+        {/* <p
           style={{ marginTop: "15px", cursor: "pointer", color: "#007bff" }}
           onClick={() => navigate("/forgot-password")}
         >
           Forgot Password?
-        </p>
+        </p> */}
       </form>
     </div>
   );

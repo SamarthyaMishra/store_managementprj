@@ -15,7 +15,7 @@ import com.store.management.model.User;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://awasthistore.in")
 public class UserController {
 
     @Autowired

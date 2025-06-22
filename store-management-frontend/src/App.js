@@ -117,10 +117,10 @@ function App() {
           }
         />
 
-        <Route
+        {/* <Route
           path="/forgot-password"
           element={<Password />} // route for password reset page
-        />
+        /> */}
 
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
