@@ -1,12 +1,11 @@
 import { useTranslation } from 'react-i18next';import { FaHome } from 'react-icons/fa';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import ukFlag from '../assets/flag/eng.png';
 import inFlag from '../assets/flag/ind.png';
 
 const CreateReturnBill = () => {
-  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -32,7 +31,7 @@ const CreateReturnBill = () => {
   const [sales, setSales] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [products, setProducts] = useState([]);
-
+  const [selectedProductId, setSelectedProductId] = useState("");
   const [isNewCustomer, setIsNewCustomer] = useState(false);
   const [newCustomerForm, setNewCustomerForm] = useState({ customerName: '', mobileNumber: '', address: '' });
 
@@ -58,21 +57,28 @@ const CreateReturnBill = () => {
   // Modal state
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
- useEffect(() => {
-  const baseURL = process.env.REACT_APP_API_BASE_URL;
+  useEffect(() => {
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
-  axios.get(`${baseURL}/api/sales`)
-    .then(res => setSales(res.data))
-    .catch(() => {});
+    // Fetch Sales
+    axios.get(`${baseURL}/api/sales`)
+      .then(res => setSales(res.data))
+      .catch(() => {});
 
-  axios.get(`${baseURL}/api/customers`)
-    .then(res => setCustomers(res.data))
-    .catch(() => {});
+    // Fetch Customers
+    axios.get(`${baseURL}/api/customers`)
+      .then(res => setCustomers(res.data))
+      .catch(() => {});
 
-  axios.get(`${baseURL}/api/products`)
-    .then(res => setProducts(res.data))
-    .catch(() => {});
-}, []);
+    // Fetch Products with proper handling
+    axios.get(`${baseURL}/api/products`)
+      .then(res => {
+        const data = res.data;
+        const productList = Array.isArray(data) ? data : data.products || [];
+        setProducts(productList);
+      })
+      .catch(() => {});
+  }, []);
 
   const handleCustomerSelect = (e) => {
     if (e.target.value === 'new') {
@@ -264,6 +270,11 @@ const response = await axios.post(`${baseURL}/api/returns/create`, payload);
         </div>
       );
     }
+  };
+
+
+  const handleProductChange = (e) => {
+    setSelectedProductId(e.target.value);
   };
 
   return (
@@ -525,12 +536,15 @@ const response = await axios.post(`${baseURL}/api/returns/create`, payload);
             }))
           }
         >
-          <option value="">{t("selectProduct")}</option>
-          {products.map(p => (
-            <option key={p.productId} value={p.productId}>
-              {p.productName}
-            </option>
-          ))}
+           <select value={selectedProductId} onChange={handleProductChange}>
+      <option value="">{t("selectProduct")}</option>
+      {products.map(p => (
+        <option key={p.productId} value={p.productId}>
+          {p.productName}
+        </option>
+      ))}
+    </select>
+
         </select>
       </td>
       <td>
