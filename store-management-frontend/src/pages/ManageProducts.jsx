@@ -52,6 +52,21 @@ const ManageProducts = () => {
       const response = await getAllProducts();
       const data = Array.isArray(response.data) ? response.data : [];
       setProducts(data);
+      if (data.length > 0) {
+        const lastProduct = data[data.length - 1];
+        const lastProductCode = lastProduct.productCode || "";
+        const newProductCode = generateNextProductCode(lastProductCode);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          productCode: newProductCode,
+        }));
+      } else {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          productCode: "P001", // Default code if no products exist
+        }));
+      }
+
     } catch (error) {
       console.error("Error loading products:", error);
       setError("Failed to load products. Please try again later.");
@@ -59,6 +74,18 @@ const ManageProducts = () => {
       setLoading(false);
     }
   };
+
+  const generateNextProductCode = (lastCode) => {
+    const match = lastCode.match(/(\D*)(\d+)$/); // Match letters followed by numbers
+    if (match) {
+      const prefix = match[1];
+      const number = parseInt(match[2], 10) + 1;
+      return `${prefix}${number.toString().padStart(match[2].length, "0")}`;
+    }
+    return "P001"; // Default code if no pattern is matched
+  };
+
+
 
   const loadUnits = async () => {
     try {
@@ -92,20 +119,21 @@ const ManageProducts = () => {
     try {
       const selectedUnit = units.find((unit) => unit.unitName === unitName);
 
-      if (!selectedUnit) {
-        setError("Invalid unit selected");
-        return;
-      }
+     if (!selectedUnit) {
+      setError("Unit is required. Please select a valid unit.");
+      return;
+    }
 
-      const productData = {
-        productName,
-        productCode,
-        unit: selectedUnit,
-        quantity: Number(quantity),
-        buyingPrice: Number(buyingPrice),
-        sellingPriceRetail: Number(sellingPriceRetail),
-        sellingPriceWholesale: Number(sellingPriceWholesale),
-      };
+    const productData = {
+      productName: formData.productName,
+      productCode: formData.productCode,
+      unit: selectedUnit, 
+      quantity: Number(formData.quantity || 0),
+      buyingPrice: Number(formData.buyingPrice || 0),
+      sellingPriceRetail: Number(formData.sellingPriceRetail || 0),
+      sellingPriceWholesale: Number(formData.sellingPriceWholesale || 0),
+    };
+
 
       if (editingIdentifier) {
         await updateProduct(editingIdentifier, productData);
